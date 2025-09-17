@@ -6,6 +6,6 @@ configurable loss functions and information theoretic measures like the  Cramer 
 
 ### Developers
 
-Tom Griesler, University of Michigan
-Dr. Martin Blaimer
-Jannik Stebani, EP5, University of Würzburg
+- Tom Griesler, University of Michigan, tomgr@umich.edu
+- Dr. Martin Blaimer, Fraunhofer IIS EZRT, martin.blaimer@iis.fraunhofer.de
+- Jannik Stebani, EP5, University of Würzburg, jannik.stebani@uni-wuerzburg.de
