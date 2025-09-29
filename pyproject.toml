@@ -13,6 +13,13 @@ dependencies = [
     "torch>=2.7.0",
     "torchvision>=0.22.0",
     "jupyter>=1.1.1",
+    "ipympl>=0.9.7",
+    "plotly>=6.3.0",
+    "attrs>=25.3.0",
+    "rich>=14.1.0",
+    "mplcursors>=0.7",
+    "pandas>=2.3.2",
+    "anywidget>=0.9.18",
 ]
 
 [tool.uv.sources]

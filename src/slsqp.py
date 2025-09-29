@@ -3,6 +3,9 @@ NOTE: The code in this script is based in part on code published by Philip Lee (
 
 This is an implementation of the SLSQP optimization algorithm as introduced by Dieter Kraft. I use a scipy implemtation, documentation can be found at https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.fmin_slsqp.html. This was my first project using advanced optimization and I'm sure there are more pythonic ways to write it, but as far as I know it does what it should. As optimize_sequence is the only function you should typically call, the typehints and docstrings for the other functions are rudimentary at best.
 
+2025-09-20
+@jsteb: added callback passthrough
+
 Tom Griesler, 05/24
 tomgr@umich.edu
 """
@@ -10,7 +13,10 @@ tomgr@umich.edu
 import torch
 import numpy as np
 import scipy
-from typing import List, Union, Optional
+
+from typing import Any, List, Union, Optional
+from collections.abc import Callable
+from numpy.typing import NDArray
 
 from signalmodel_iso import calculate_crlb_sc_iso, calculate_crlb_mc_iso, calculate_orth_iso
 from signalmodel_epg import calculate_crlb_sc_epg, calculate_crlb_mc_epg, calculate_orth_epg
@@ -106,7 +112,38 @@ def f_ieqcons_function(fatr: np.ndarray, *args):
     return out
 
 
-def optimize_sequence(costfunction: str, t1: Union[float, List[float]], t2: Union[float, List[float]], m0: float, beats: int, shots: int, fa: np.ndarray, tr: np.ndarray, ph: np.ndarray, prep: List[int], ti: List[int], t2te: List[int], te: float, fa_min: float, fa_max: float, fa_maxdiff: float, n_iter_max: int, weighting: Optional[List[float]]=None, ratio: Optional[float]=None, slsqp_scaling: float=1e3, optimize_tr: bool=False, tr_min: float=0, tr_max: float=torch.inf, inv_eff: float=1., delta_B1: float=1., n_iso: int=200, deph: int=2, acc: float=1e-4):
+def optimize_sequence(
+    costfunction: str,
+    t1: Union[float, List[float]],
+    t2: Union[float, List[float]],
+    m0: float,
+    beats: int,
+    shots: int,
+    fa: np.ndarray,
+    tr: np.ndarray,
+    ph: np.ndarray,
+    prep: List[int],
+    ti: List[int],
+    t2te: List[int],
+    te: float,
+    fa_min: float,
+    fa_max: float,
+    fa_maxdiff: float,
+    n_iter_max: int,
+    weighting: Optional[List[float]] = None,
+    ratio: Optional[float] = None,
+    slsqp_scaling: float = 1e3,
+    optimize_tr: bool = False,
+    tr_min: float = 0,
+    tr_max: float = torch.inf,
+    inv_eff: float = 1.0,
+    delta_B1: float = 1.0,
+    n_iso: int = 200,
+    deph: int = 2,
+    acc: float = 1e-4,
+    callback: Callable[[NDArray], Any] = None,
+    iprint: int = 0,
+    ):
     """
     Function to optimize the flip angles and repetition times in an MRF sequence using the SLSQP algorithm.
 
@@ -141,6 +178,8 @@ def optimize_sequence(costfunction: str, t1: Union[float, List[float]], t2: Unio
         n_iso (int): number of isochromats. Only used when using isochromat summation 
         deph (int): dephasing across voxel in multiples of pi. Only used when using isochromat summation 
         acc (float): accuracy, controls convergence
+        callback (Callable[[NDArray], Any]): A function to be called after each iteration of the optimizer. The current parameter values are passed as a numpy array to the callback function.
+        iprint (int): controls the verbosity of the optimization output. 0: no output, 1: output only at the end, 2: output at each iteration
 
     Returns:
         fa (ndarray): optimized flip angles in degrees
@@ -168,7 +207,10 @@ def optimize_sequence(costfunction: str, t1: Union[float, List[float]], t2: Unio
     args = costfunction, weighting, t1, t2, m0, ratio, beats, shots, ph, prep, ti, t2te, te, inv_eff, delta_B1, n_iso, deph, slsqp_scaling, optimize_tr, fa_maxdiff
 
     # Run optimization
-    fatr_final, fx, its, _, smode = scipy.optimize.fmin_slsqp(cost_wrapper, fatr_init, bounds=bounds, acc=acc, iprint=2, args=args, iter=n_iter_max, fprime=grad_wrapper, f_ieqcons=f_ieqcons_function, full_output=True)
+    fatr_final, fx, its, _, smode = scipy.optimize.fmin_slsqp(
+        cost_wrapper, fatr_init, bounds=bounds, acc=acc, iprint=iprint, args=args,
+        iter=n_iter_max, fprime=grad_wrapper, f_ieqcons=f_ieqcons_function,
+        full_output=True, callback=callback)
     
     fa, tr = np.split(fatr_final, 2)
 
