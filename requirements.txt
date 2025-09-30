@@ -81,14 +81,13 @@ ipykernel==6.30.1
     #   jupyterlab
 ipympl==0.9.7
     # via esmrmb-notebook (pyproject.toml)
-ipython==9.6.0
+ipython==8.37.0
     # via
+    #   esmrmb-notebook (pyproject.toml)
     #   ipykernel
     #   ipympl
     #   ipywidgets
     #   jupyter-console
-ipython-pygments-lexers==1.1.1
-    # via ipython
 ipywidgets==8.1.7
     # via
     #   esmrmb-notebook (pyproject.toml)
@@ -271,7 +270,6 @@ pycparser==2.23
 pygments==2.19.2
     # via
     #   ipython
-    #   ipython-pygments-lexers
     #   jupyter-console
     #   nbconvert
     #   rich
