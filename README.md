@@ -3,6 +3,7 @@
 This demonstration code and notebook repository displays programmatic magnetic resonance fingerprinting optimization with respect to various
 configurable loss functions and information theoretic measures like the  Cramer Rao Lower Bound (CRLB).
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/stebix/esmrmb2025-tutorial/blob/trunk/notebooks/esmrmb-demo.ipynb)
 
 ### Developers
 
