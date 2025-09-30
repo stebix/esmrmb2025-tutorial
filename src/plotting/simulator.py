@@ -2,7 +2,6 @@ from numbers import Real
 from copy import deepcopy
 
 import numpy as np
-import torch
 import ipywidgets as wgt
 
 from numpy.typing import ArrayLike, NDArray
@@ -111,7 +110,7 @@ def make_run_button(
         'description': 'Run simulation',
         'tooltip': 'Press to run the simulation witht the current settings.',
         'button_style': '',  # 'success', 'info', 'warning', 'danger' or ''
-        'icon': 'microchip',  # (FontAwesome names without the `fa-` prefix)
+        'icon': 'microchip',  # (FontAwesome names without the fa prefix)
     }
     layout_defaults = {
         'width': '250px',
@@ -222,7 +221,7 @@ class SimulationController:
     
 
     def _connect_run_button(self) -> None:
-        """Connect run button to `run` method."""
+        """Connect run button to run method."""
         self.dashboard.run_button.on_click(lambda btn: self.run())
 
     def add_on_run_complete_callback(
