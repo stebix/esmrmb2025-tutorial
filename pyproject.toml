@@ -20,7 +20,7 @@ dependencies = [
     "mplcursors>=0.7",
     "pandas>=2.3.2",
     "anywidget>=0.9.18",
-    "ipython<9",
+    "ipython>=9.6.0",
 ]
 
 [tool.uv.sources]
