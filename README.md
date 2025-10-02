@@ -1,7 +1,17 @@
 # Programmatic Sequence Optimization
 
-This demonstration code and notebook repository displays programmatic magnetic resonance fingerprinting optimization with respect to various
-configurable loss functions and information theoretic measures like the  Cramer Rao Lower Bound (CRLB).
+### 📋 Overview
+This demonstration code and notebook repository showcases programmatic magnetic resonance fingerprinting (MRF) optimization 🎯 with respect to various configurable loss functions and information theoretic measures like the Cramér-Rao Lower Bound (CRLB) 📊.
+
+### 🎨 What is MR Fingerprinting?
+Magnetic Resonance Fingerprinting is an innovative quantitative MRI technique 🏥 that simultaneously acquires multiple tissue properties (T1, T2, proton density, etc.) by matching unique signal evolutions—or "fingerprints" 👆—to a pre-computed dictionary of simulated signals.
+
+### 🔧 Core Features
+
+⚙️ Sequence Optimization: 
+The toolkit enables automated optimization of MRF acquisition sequences by:
+- 📐 Adjusting flip angles and optionally repetition times (TR)
+- 📉 Manual sequence design via demonstrator interactive widgets
 
 ## Installation
 
@@ -20,7 +30,7 @@ brew install uv
 **Install the project:**
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/stebix/esmrmb2025-tutorial
 cd esmrmb-notebook
 
 # Create virtual environment and install all dependencies
