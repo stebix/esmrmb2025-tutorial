@@ -1,8 +1,13 @@
+import json
 import plotly.graph_objects as go
 import ipywidgets as wgt
 
 from numpy.typing import ArrayLike
 from typing import Sequence, Literal
+from pathlib import Path
+
+from tools import OptimizationPackage
+
 
 class OpacityScaler:
     def __init__(
@@ -176,7 +181,7 @@ class SelectableHistoryPlot:
         center = len(data) // 2
         lr, rr = self.initial_range
 
-        self.selector = wgt.IntRangeSlider(
+        self.rangeselector = wgt.IntRangeSlider(
             value=[max(center-lr, 0), min(center+rr, len(data)-1)],
             min=0,
             max=len(data)-1,
@@ -204,8 +209,19 @@ class SelectableHistoryPlot:
             xaxis=dict(title='TR index'),
             yaxis=dict(title='Flip Angle (degrees)')
         )
-        self.selector.observe(self._on_slider_change, names='value')
-        self._add_traces(self.data[slice(*self.selector.value)])
+        self.rangeselector.observe(self._on_rangeselector_change, names='value')
+        self._add_traces(self.data[slice(*self.rangeselector.value)])
+
+    def set_data(self, data: Sequence[ArrayLike]) -> None:
+        """
+        Wipe old data and set new data (plot new data and repurpose plot).
+        """
+        self.data = data
+        self.rangeselector.max = len(data) - 1
+        center = len(data) // 2
+        lr, rr = self.initial_range
+        self.rangeselector.value = [max(center-lr, 0), min(center+rr, len(data)-1)]
+        self._add_traces(self.data[slice(*self.rangeselector.value)])
 
     @property
     def color(self) -> str:
@@ -218,7 +234,9 @@ class SelectableHistoryPlot:
             trace.line.color = new_color
 
     def _add_traces(self, data: ArrayLike) -> None:
-        for idx, datum in enumerate(data):
+        # step through data in reverse order such that 'later' datum
+        # has higher opacity
+        for idx, datum in enumerate(reversed(data)):
             trace = go.Scatter(
                 y=datum,
                 mode='lines',
@@ -230,7 +248,7 @@ class SelectableHistoryPlot:
             )
             self.fig.add_trace(trace)
 
-    def _on_slider_change(self, change) -> None:
+    def _on_rangeselector_change(self, change) -> None:
         slc = slice(*change['new'])
         with self.fig.batch_update():
             self.fig.data = []
@@ -246,7 +264,7 @@ class SelectableHistoryPlot:
         return mapping[scaling](max_rank=max_rank)
     
     def _get_current_range(self) -> tuple[int, int]:
-        return self.selector.value
+        return self.rangeselector.value
 
     @property
     def opacity_scaling(self) -> Literal['linear', 'exponential']:
@@ -263,3 +281,90 @@ class SelectableHistoryPlot:
         for rank, trace in enumerate(self.fig.data):
             trace.opacity = self._opacity_scaler(rank)     
 
+
+
+class PrecomputedOptimizationPlot:
+    options: list[dict[str, str]] = [
+        {'label' : 'CRLB MC EPG',
+         'value': 'crlb-mc-epg',
+         'tooltip': 'Cramér-Rao Lower Bound for Multi-Compartment model using EPG signal model'},
+        {'label' : 'CRLB SC EPG',
+         'value': 'crlb-sc-epg',
+         'tooltip': 'Cramér-Rao Lower Bound for Single-Compartment model using EPG signal model'},
+        {'label' : 'Orthogonality EPG',
+         'value': 'orth-epg',
+         'tooltip': 'Orthogonality between signal vectors of relaxometric species for EPG signal model'},
+    ]
+    label2value: dict[str, str] = {option['label']: option['value'] for option in options}
+    staticdir = Path('../src/static')
+
+    def __init__(
+        self,
+        pkg: OptimizationPackage | None,
+    ) -> None :
+        # set up full UI state first since we deduce
+        # some visualization settings from it
+        self.runselector = wgt.ToggleButtons(
+            options=[option['label'] for option in self.options],
+            description='Precomputed optimization:',
+            style={'description_width': 'initial'},
+            tooltips=[option['tooltip'] for option in self.options],
+        )
+        self.runselector.observe(self._on_runselector_change, names='value')
+        
+        self.opacityselector = wgt.Dropdown(
+            options=['linear', 'exponential'],
+            value='linear',
+            description='Opacity scaling:',
+            style={'description_width': 'initial'}
+        )
+        self.opacityselector.observe(self._on_opacityselector_change, names='value')
+
+        # if user did not provide package, load default from UI state
+        self._pkg = self._init_pkg(pkg)
+        self.plot: SelectableHistoryPlot = self._initialize_plot()
+
+    def _init_pkg(self, candidate: OptimizationPackage | None) -> None:
+        if candidate is not None:
+            return candidate
+        path = self._make_path(self.label2value[self.runselector.value])
+        return self._load_pkg(path)
+
+    def _on_runselector_change(self, change) -> None:
+        label = change['new']
+        value = self.label2value[label]
+        path = self._make_path(value)
+        pkg = self._load_pkg(path)
+        self.set_pkg(pkg)
+
+    def _on_opacityselector_change(self, change) -> None:
+        new_opacity_scaling = change['new']
+        self.plot.opacity_scaling = new_opacity_scaling
+    
+    def _make_path(self, option: str) -> Path:
+        """Make path to static JSON file for given option."""
+        filename = f'{option}-500.json'
+        return self.staticdir / filename
+    
+    @staticmethod
+    def _load_pkg(path: Path) -> OptimizationPackage:
+        """Load optimization package from JSON file."""
+        with open(path, 'r') as f:
+            pkg_dict = json.load(f)
+
+        return OptimizationPackage(**pkg_dict)
+
+    def _initialize_plot(self) -> SelectableHistoryPlot:
+        """Initialize the history plot with the data from the optimization package."""
+        data = self._pkg.fa_history if self._pkg else []
+        opacity_scaling = self.opacityselector.value
+        plot = SelectableHistoryPlot(
+            data=data,
+            opacity_scaling=opacity_scaling
+        )
+        return plot
+
+    def set_pkg(self, pkg: OptimizationPackage):
+        """Set new optimization package and fully reinitialize the plot."""
+        self._pkg = pkg
+        self.plot.set_data(pkg.fa_history) 
