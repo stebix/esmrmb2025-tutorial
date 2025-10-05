@@ -29,10 +29,10 @@ When running the optimization, the flip angle trains of several iterations are d
 ![Live Optimization Plot](assets/live-optimization-plot.png)
 
 In addition to the orthogonality target, we can also optimize the flip angle trains with respect to the Cramér–Rao (lower) bound
-(CRLB) for single-compartment problems (often a MRI default assumption - a single relaxometric species determines the signal vector $s_i(t)$ of the voxel $i$) and multi-compartment problems (multiple relaxometric species contribute to a measured signal vector $s_i(t) = \sum_j \tilde{s}_j(t)$).
+(CRLB) for single-compartment problems (often a MRI default assumption - a single relaxometric species determines the signal vector $s_i(t)$ of the voxel $i$) and multi-compartment problems (multiple relaxometric species contribute to a measured signal vector $$ s_i(t) = \sum_j \tilde{s}_j(t) $$).
 Since these optimizations can take a long time, we pre-ran some optimizations and provided dynamic visualizations in the notebook for you to look at.
 
-[IMAGE]
+![History Optimization Plot](assets/history-optimization-plot.png)
 
 For further information, we cordially invite you to check out the referenced demonstration notebook and the corresponding code to start experimenting 🔬🥼!
 As an extending step, you might want to test optimized or manually designed flip angle trains and repetition time patterns experimentally at a scanner.
@@ -89,8 +89,12 @@ jupyter notebook notebooks/esmrmb-demo.ipynb
 ### Developers
 
 - Tom Griesler, University of Michigan, tomgr@umich.edu
+    - [Base implementation](https://github.com/tomgriesler/tg_mrf_optimization) of EPG optimization code with `scipy` and `torch`
 - Dr. Martin Blaimer, Fraunhofer IIS EZRT, martin.blaimer@iis.fraunhofer.de
+    - Supervision, administration and markdown presentation
 - Jannik Stebani, EP5, University of Würzburg, jannik.stebani@uni-wuerzburg.de
+    - Further development of code with interactive visualizations and experiments
+    - Repo setup and presentation
 
 
 ### Key publications associated with this optimization approach and context
