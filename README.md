@@ -22,6 +22,27 @@ Subsequent forward simulation yields the species-wise signal evolution for the s
 
 ![Interactive Parameter Editor Visualization](assets/interactive-editor.png)
 
+We can then start the optimization of the flip angle train with constrained SLSQP by executing the cells below.
+Here, the optimization target is to maximize orthogonality between the signal vectors of the relaxometric species.
+When running the optimization, the flip angle trains of several iterations are displayed dynamically in the coresponding history plot.
+
+[IMAGE]
+
+In addition to the orthogonality target, we can also optimize the flip angle trains with respect to the Cramér–Rao (lower) bound
+(CRLB) for single-compartment problems (often a MRI default assumption - a single relaxometric species determines the signal vector $s_i(t)$ of the voxel $i$) and multi-compartment problems (multiple relaxometric species contribute to a measured signal vector $s_i(t) = \sum_j \tilde{s}_j(t)$).
+Since these optimizations can take a long time, we pre-ran some optimizations and provided dynamic visualizations in the notebook for you to look at.
+
+[IMAGE]
+
+For further information, we cordially invite you to check out the referenced demonstration notebook and the corresponding code to start experimenting 🔬🥼!
+As an extending step, you might want to test optimized or manually designed flip angle trains and repetition time patterns experimentally at a scanner.
+For this purpose, we would like to recommend the upcoming OpenMRF project, which allows you to rapidly implement and compile MRF sequences in a Pulseq-based vendor neutral fashion. It is directly geared towards fingerprinting applications and facilitates easy loading of flip angle trains and repetition time patterns for IR-FISP MRF sequences.
+
+![Open MRF banner](assets/openmrf-banner.png)
+
+
+We wish you fun in playing around with the notebook and code and wish an enjoyable ESMRMB 2025 - Cheers 🎆 from Würzburg and the people of [Experimental Physics 5](https://www.physik.uni-wuerzburg.de/ep5/)
+
 ## Installation
 
 ### Quick Start with uv (Recommended)
