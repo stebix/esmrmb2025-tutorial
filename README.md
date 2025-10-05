@@ -26,7 +26,7 @@ We can then start the optimization of the flip angle train with constrained SLSQ
 Here, the optimization target is to maximize orthogonality between the signal vectors of the relaxometric species.
 When running the optimization, the flip angle trains of several iterations are displayed dynamically in the coresponding history plot.
 
-[IMAGE]
+![Live Optimization Plot](assets/live-optimization-plot.png)
 
 In addition to the orthogonality target, we can also optimize the flip angle trains with respect to the Cramér–Rao (lower) bound
 (CRLB) for single-compartment problems (often a MRI default assumption - a single relaxometric species determines the signal vector $s_i(t)$ of the voxel $i$) and multi-compartment problems (multiple relaxometric species contribute to a measured signal vector $s_i(t) = \sum_j \tilde{s}_j(t)$).
@@ -40,6 +40,7 @@ For this purpose, we would like to recommend the upcoming OpenMRF project, which
 
 ![Open MRF banner](assets/openmrf-banner.png)
 
+For this, check out the open source [OpenMRF](https://github.com/HarmonizedMRI/OpenMRF) repository under the harmonized MRI moniker! 
 
 We wish you fun in playing around with the notebook and code and wish an enjoyable ESMRMB 2025 - Cheers 🎆 from Würzburg and the people of [Experimental Physics 5](https://www.physik.uni-wuerzburg.de/ep5/)
 
