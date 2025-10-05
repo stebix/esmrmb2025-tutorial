@@ -20,6 +20,7 @@ flip angle train, repetition time pattern and relaxometric species. The flip ang
 Relaxometric species (i.e. points in the $(T_1, T_2)$ plane) can be added (left click) and removed (right click) by mouse events in the interactive canvas.
 Subsequent forward simulation yields the species-wise signal evolution for the set sequence parameters that can be inspected in the result plot.
 
+![Interactive Parameter Editor Visualization](assets/interactive-editor.png)
 
 ## Installation
 
