@@ -4,14 +4,22 @@
 This demonstration code and notebook repository showcases programmatic magnetic resonance fingerprinting (MRF) optimization 🎯 with respect to various configurable loss functions and information theoretic measures like the Cramér-Rao Lower Bound (CRLB) 📊.
 
 ### 🎨 What is MR Fingerprinting?
-Magnetic Resonance Fingerprinting is an innovative quantitative MRI technique 🏥 that simultaneously acquires multiple tissue properties (T1, T2, proton density, etc.) by matching unique signal evolutions—or "fingerprints" 👆—to a pre-computed dictionary of simulated signals.
+Magnetic Resonance Fingerprinting is a quantitative MRI technique 🏥, firstly described in [Ma et al. 2013](https://doi.org/10.1038/nature11971) that simultaneously acquires multiple tissue properties (T1, T2, proton density, etc.) by matching unique signal evolutions or "fingerprints" 👆 to a pre-computed dictionary of simulated signals.
 
 ### 🔧 Core Features
 
-⚙️ Sequence Optimization: 
-The toolkit enables automated optimization of MRF acquisition sequences by:
-- 📐 Adjusting flip angles and optionally repetition times (TR)
-- 📉 Manual sequence design via demonstrator interactive widgets
+This demonstration repository contains autodifferentiable forward simulation code (see `signalmodel_` files), optimization code (see `slsqp.py`) and interactive visualization and sequence design code (see `plotting` subpackage).
+A comprehensive overview demonstrator notebook is given via `esmrmb-notebook.ipynb` in the `notebooks` directory.
+The core feature of ⚙️ sequence optimization is the result of the manual design and automated optimization
+toolkit contained in this respository.
+- 📉 Manual sequence design and optimization input parameter setup via demonstrator interactive widgets
+- 📐 Automated optimization of flip angle train and optionally repetition time (TR) pattern via sequential quadratic programming [(SLSQP)](https://en.wikipedia.org/wiki/Sequential_quadratic_programming).
+
+Here is an overview shot of the interactive sequence and simulation parameter editor that allows to dynamically edit the
+flip angle train, repetition time pattern and relaxometric species. The flip angle train and the repetition time curves can be edited based on draggable control points that manipulate the underlying spline curve.
+Relaxometric species (i.e. points in the $(T_1, T_2)$ plane) can be added (left click) and removed (right click) by mouse events in the interactive canvas.
+Subsequent forward simulation yields the species-wise signal evolution for the set sequence parameters that can be inspected in the result plot.
+
 
 ## Installation
 
@@ -81,3 +89,7 @@ Multi-compartment MRF Optimization:
 
 Basis FA pattern
 -  Cao X, Liao C, Iyer SS, et al. Optimized multi-axis spiral projection MR fingerprinting with subspace reconstruction for rapid whole-brain high-isotropic-resolution quantitative imaging. Magn Reson Med. 2022; 88: 133-150. doi:10.1002/mrm.29194
+
+
+FISP MRF
+- Jiang Y, Ma D, Seiberlich N, Gulani V, Griswold MA. MR fingerprinting using fast imaging with steady state precession (FISP) with spiral readout. Magn Reson Med. 2015 Dec;74(6):1621-31. doi: 10.1002/mrm.25559. Epub 2014 Dec 9. PMID: 25491018; PMCID: PMC4461545.
