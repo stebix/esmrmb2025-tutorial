@@ -3,7 +3,7 @@ from numbers import Real
 import numpy as np
 import ipywidgets as wgt
 
-from numpy.typing import ArrayLike, NDArray
+from numpy.typing import NDArray
 from typing import Any, Protocol
 from collections.abc import Callable
 
