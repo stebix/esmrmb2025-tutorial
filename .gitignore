@@ -1,5 +1,6 @@
 # scratch folder is for WIP
 notebooks/scratch/*
+notebooks/test*
 
 # Python-generated files
 __pycache__/
